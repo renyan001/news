@@ -1,3 +1,3 @@
 exports.showSignin = (req, res) => {
-  res.send('/////');
+  res.render('signin.html');
 };
