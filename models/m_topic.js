@@ -43,6 +43,7 @@ exports.deleTopicById = (topicID, callback) => {
   })
 }
 
+
 // 编辑信息
 exports.editTopicById = (topicID, body, callback) => {
   const sqlstr = 'update `topics` set ? where id=?';

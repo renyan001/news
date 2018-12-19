@@ -128,4 +128,3 @@ exports.handleEditTopic = (req, res) => {
     })
   })
 }
-
