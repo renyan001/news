@@ -5,7 +5,7 @@ exports.showSignin = (req, res) => {
   res.render('signin.html');
 };
 
-exports.handleSignin = (req, res) => {
+exports.handleSignin = (req, res, next) => {
   const body = req.body;
   console.log(body);
 
@@ -13,10 +13,7 @@ exports.handleSignin = (req, res) => {
   M_user.checkEmail(body.email, (err, data) => {  
     if (err) {
       // throw err;
-      return res.send({
-        code:500,
-        msg:'服务器错误!'
-      });
+      return next(err);
     }
     // 此时，只能说明，执行了sql语句之后，没有错误，但是data中不一定有数据，所以需要判断，data中是否有一条数据，因为邮箱是唯一的
     if (data.length === 0) {
@@ -49,7 +46,7 @@ exports.handleSignin = (req, res) => {
   
 }
 
-exports.handleSignout = (req, res) => {
+exports.handleSignout = (req, res, next) => {
   // 清除session的user信息
   delete req.session.user;
   // 回到登录页
@@ -57,21 +54,18 @@ exports.handleSignout = (req, res) => {
 }
 
 // 渲染注册页
-exports.showSignup = (req, res) => {
+exports.showSignup = (req, res, next) => {
   res.render('signup.html');
 }
 
 // 处理注册页
-exports.handleSignup = (req, res) => {
+exports.handleSignup = (req, res, next) => {
   const body = req.body;
   // 验证邮箱
   M_user.checkEmail(body.email, (err, data) => {
     if (err) {
       // throw err;
-      return res.send({
-        code:500,
-        msg:'服务器错误!'
-      });
+      return next(err);
     }
     if (data.length !== 0) {
       return res.send({
@@ -83,10 +77,7 @@ exports.handleSignup = (req, res) => {
     // 此时，邮箱不存在，可以继续验证昵称
     M_user.checkNickname(body.nickname, (err, data) => {
       if (err) {
-        return res.send({
-          code:500,
-          msg:'服务器错误!'
-        });
+        return next(err);
       }
       if (data[0]) {
         return res.send({
@@ -98,10 +89,7 @@ exports.handleSignup = (req, res) => {
       // 此时，昵称不存在，可以注册了
       M_user.addUser(body, (err, data) => {
         if (err) {
-          return res.send({
-            code:500,
-            msg:'服务器错误!'
-          });
+          return next(err);
         }
         // 返回200响应，注册成功
         res.send({

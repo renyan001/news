@@ -35,8 +35,26 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.use((req, res, next) => {
+  app.locals.sessionUser = req.session.user;
+  next();
+})
+
+app.use((err, req, res, next) => {
+  res.send({
+    code:500,
+    msg:err.message
+  });
+})
+
 // 使用路由
 app.use(router);
+
+// 404页面
+app.use((req, res, next) => {
+  res.render('404.html');
+  next();
+})
 // 监听端口
 app.listen(12348, () => {
   console.log('run it ---');
